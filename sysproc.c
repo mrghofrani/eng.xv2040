@@ -89,3 +89,18 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+//return how many times corresponding system call called during calling process
+// returns -1 for out of range system call
+int
+sys_getCount(void)
+{
+int counter;
+argint(0, &counter);
+
+  if( counter < 1 || counter > 22){
+    return -1;
+    }
+
+return myproc()->syscall_counter[counter];
+}
