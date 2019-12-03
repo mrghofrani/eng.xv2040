@@ -89,7 +89,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-  for (i = 0; i < 22 ; i++){
+  for (i = 0; i < 23 ; i++){
         P->syscall_counter[i] = 0;
     }
 
