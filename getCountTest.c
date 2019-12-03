@@ -24,6 +24,7 @@ main(int argc, char *argv[])
       wait ();
       printf(1, "systemcall counter : %d in process %d\n", getCount(n), getpid() );
    } else {   // child
+      getpid();
       printf(1, "Child %d created\n", getpid() );
       exit();
     }
