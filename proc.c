@@ -90,7 +90,7 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   for (i = 0; i < 23 ; i++){
-        P->syscall_counter[i] = 0;
+        p->syscall_counter[i] = 0;
     }
 
   release(&ptable.lock);
