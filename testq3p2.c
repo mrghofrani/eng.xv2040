@@ -4,7 +4,6 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
-#include "defs.h"
 
 int main()
 {
@@ -18,28 +17,34 @@ int main()
 
     if (n1 > 0 && n2 > 0) {
         changePriority(1);
-        cprintf(1,"parent\n");
-        cprintf(1,"%d %d \n", n1, n2);
-        cprintf(1," my id is %d \n", getpid());
+        printf(1,"parent\n");
+        printf(1,"%d %d \n", n1, n2);
+        printf(1," my id is %d \n", getpid());
+        wait();
+        wait();
+        exit();
     }
     else if (n1 == 0 && n2 > 0){
         changePriority(2);
-        cprintf(1,"First child\n");
-        cprintf(1,"%d %d \n", n1, n2);
-        cprintf(1,"my id is %d  \n", getpid());
+        printf(1,"First child\n");
+        printf(1,"%d %d \n", n1, n2);
+        printf(1,"my id is %d  \n", getpid());
+        wait();
+        exit();
     }
     else if (n1 > 0 && n2 == 0)
     {
         changePriority(4);
-        cprintf(1,"Second child\n");
-        cprintf(1,"%d %d \n", n1, n2);
-        cprintf(1,"my id is %d  \n", getpid());
+        printf(1,"Second child\n");
+        printf(1,"%d %d \n", n1, n2);
+        printf(1,"my id is %d  \n", getpid());
+        exit();
     }
     else {
-        changePriority(5);
-        cprintf(1,"third child\n");
-        cprintf(1,"%d %d \n", n1, n2);
-        cprintf(1," my id is %d \n", getpid());
+        changePriority(1);
+        printf(1,"third child\n");
+        printf(1,"%d %d \n", n1, n2);
+        printf(1," my id is %d \n", getpid());
+        exit();
     }
-    return 0;
 }
