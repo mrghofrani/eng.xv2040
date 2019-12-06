@@ -532,3 +532,26 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+int
+getppid(struct proc* p){
+    return p->parent->pid;
+}
+
+int
+getChildren(void){
+    struct proc *p;
+    struct proc *parent = myproc();
+    int chain; // Whole children of a process
+    acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+        int ppid = getppid(p);
+        if(ppid == parent->pid){
+            // TODO: length
+            // TODO: 10 ^ length * chain
+            // TODO: add to chain
+        }
+    }
+    release(&ptable.lock);
+    return chain;
+}

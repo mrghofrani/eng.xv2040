@@ -93,5 +93,10 @@ sys_uptime(void)
 //Custom system call to return parent process id
 int
 sys_getppid(void){
-   return myproc()->parent->pid;
+    return getppid(myproc());
+}
+
+int
+sys_getchildren(void){
+    return getChildren();
 }
