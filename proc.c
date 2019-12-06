@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include <limits.h>
 
 struct {
   struct spinlock lock;
@@ -76,7 +77,19 @@ allocproc(void)
   struct proc *p;
   char *sp;
 
+  int min_calculated_priority = INT_MAX; // set min_calculated_priority to maximum value possible
+
   acquire(&ptable.lock);
+
+  // finding min value for min_calculated_priority
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+      if (p->state == RUNNABLE && min_calculated_priority > p->calculatedPriority)
+          min_calculated_priority = p->calculatedPriority;
+  }
+
+  // if noting changed the min_calculated_priority, There wasn't any process so that we should set the value to zero manually
+  if(min_calculated_priority == INT_MAX)
+      min_calculated_priority = 0;
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     if(p->state == UNUSED)
@@ -88,6 +101,8 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->priority = 5;
+  p->calculatedPriority = min_calculated_priority;
 
   release(&ptable.lock);
 
