@@ -86,6 +86,7 @@ allocproc(void)
   return 0;
 
 found:
+  p->slot = 0;
   p->state = EMBRYO;
   p->pid = nextpid++;
 
