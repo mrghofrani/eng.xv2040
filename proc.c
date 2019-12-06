@@ -386,10 +386,14 @@ sched(void)
 void
 yield(void)
 {
-  acquire(&ptable.lock);  //DOC: yieldlock
-  myproc()->state = RUNNABLE;
-  sched();
-  release(&ptable.lock);
+    myproc()->slot++;
+    if(myproc()->slot >= QUANTUM){
+        acquire(&ptable.lock);  //DOC: yieldlock
+        myproc()->state = RUNNABLE;
+        myproc()->slot = 0;
+        sched();
+        release(&ptable.lock);
+    }
 }
 
 // A fork child's very first scheduling by scheduler()
