@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "utils.c"
 
 struct {
   struct spinlock lock;
@@ -547,7 +548,7 @@ getChildren(void){
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
         int ppid = getppid(p);
         if(ppid == parent->pid){
-            // TODO: length
+            int length = intlen(ppid);
             // TODO: 10 ^ length * chain
             // TODO: add to chain
         }

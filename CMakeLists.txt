@@ -103,4 +103,4 @@ add_executable(eng_xv2040
         vm.c
         wc.c
         x86.h
-        zombie.c)
+        zombie.c utils.c)
