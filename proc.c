@@ -549,8 +549,8 @@ getChildren(void){
         int ppid = getppid(p);
         if(ppid == parent->pid){
             int length = intlen(ppid);
-            // TODO: 10 ^ length * chain
-            // TODO: add to chain
+            chain *= power(10,length);
+            chain += ppid;
         }
     }
     release(&ptable.lock);
