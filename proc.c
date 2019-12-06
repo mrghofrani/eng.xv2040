@@ -346,20 +346,21 @@ scheduler(void)
   for(;;){
     // Enable interrupts on this processor.
     sti();
+
     min_calculatedPriority = INT_MAX;
     found = 0; // Zero means not found
     
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-        if (p->state != RUNNABLE && min_calculatedPriority > p->calculatedPriority) {
+        if (p->state == RUNNABLE && min_calculatedPriority > p->calculatedPriority) {
             min_calculatedPriority = p->calculatedPriority;
             best = p;
             found = 1;
         }
     }
 
-    if(found) {
+    if(found == 1) {
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
         // before jumping back to us.
