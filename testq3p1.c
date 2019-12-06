@@ -8,13 +8,13 @@
 int main(){
     int pid = fork();
     if(pid > 0){
-        for (int i = 0; i < 100000; ++i)
-            printf("I'M DAD");
+        for (int i = 0; i < 100; ++i)
+            printf(1,"I'M DAD pid %d repeating %d\n", pid, i);
     } else if(pid == 0){
-        for (int i = 0; i < 100000; ++i)
-            printf("I'M SON");
-        exit(0);
+        for (int i = 0; i < 100; ++i)
+            printf(1,"I'M SON pid %d repeating %d\n", pid, i);
+        exit();
     } else {
-        printf("fork error\en");
+        printf(2,"fork error\en");
     }
 }
