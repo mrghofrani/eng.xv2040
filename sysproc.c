@@ -97,6 +97,6 @@ sys_getppid(void){
 }
 
 int
-sys_getchildren(void){
+sys_getChildren(void){
     return getChildren();
 }

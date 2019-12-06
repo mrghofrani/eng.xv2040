@@ -543,14 +543,16 @@ int
 getChildren(void){
     struct proc *p;
     struct proc *parent = myproc();
-    int chain; // Whole children of a process
+    int ppid;
+    int chain = 0; // Whole children of a process
     acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-        int ppid = getppid(p);
-        if(ppid == parent->pid){
-            int length = intlen(ppid);
+        ppid = getppid(p);
+        if(p && ppid == parent->pid){
+            int chpid = p->pid;
+            int length = intlen(chpid);
             chain *= power(10,length);
-            chain += ppid;
+            chain += chpid;
         }
     }
     release(&ptable.lock);

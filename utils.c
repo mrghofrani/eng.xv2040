@@ -11,6 +11,7 @@ int intlen(int num){
         /* Remove last digit of 'num' */
         num /= 10;
     }
+    return count;
 }
 
 int power(int base, int power){
