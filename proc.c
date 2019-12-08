@@ -98,6 +98,7 @@ allocproc(void)
   return 0;
 
 found:
+  p->slot = 0;
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->priority = 5;
@@ -347,35 +348,55 @@ scheduler(void)
     // Enable interrupts on this processor.
     sti();
 
-    min_calculatedPriority = INT_MAX;
-    found = 0; // Zero means not found
-    
-    // Loop over process table looking for process to run.
-    acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-        if (p->state == RUNNABLE && min_calculatedPriority > p->calculatedPriority) {
-            min_calculatedPriority = p->calculatedPriority;
-            best = p;
-            found = 1;
+    if(true) {
+        min_calculatedPriority = INT_MAX;
+        found = 0; // Zero means not found
+
+        // Loop over process table looking for process to run.
+        acquire(&ptable.lock);
+        for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+            if (p->state == RUNNABLE && min_calculatedPriority > p->calculatedPriority) {
+                min_calculatedPriority = p->calculatedPriority;
+                best = p;
+                found = 1;
+            }
         }
+
+        if (found == 1) {
+            // Switch to chosen process.  It is the process's job
+            // to release ptable.lock and then reacquire it
+            // before jumping back to us.
+            c->proc = best;
+            switchuvm(best);
+            best->state = RUNNING;
+
+            swtch(&(c->scheduler), best->context);
+            switchkvm();
+
+            // Process is done running for now.
+            // It should have changed its p->state before coming back.
+            c->proc = 0;
+        }
+        release(&ptable.lock);
     }
+    else{
+        for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+            if(p->state != RUNNABLE)
+                continue;
+            // Switch to chosen process.  It is the process's job
+            // to release ptable.lock and then reacquire it
+            // before jumping back to us.
+            c->proc = p;
+            switchuvm(p);
+            p->state = RUNNING;
+            p->slot = 0;
+            swtch(&(c->scheduler), p->context);
+            switchkvm();
+            // Process is done running for now.
+            // It should have changed its p->state before coming back.
+            c->proc = 0;
 
-    if(found == 1) {
-        // Switch to chosen process.  It is the process's job
-        // to release ptable.lock and then reacquire it
-        // before jumping back to us.
-        c->proc = best;
-        switchuvm(best);
-        best->state = RUNNING;
-
-        swtch(&(c->scheduler), best->context);
-        switchkvm();
-
-        // Process is done running for now.
-        // It should have changed its p->state before coming back.
-        c->proc = 0;
-    }
-    release(&ptable.lock);
+        }
 
   }
 }
@@ -410,10 +431,24 @@ sched(void)
 void
 yield(void)
 {
-  acquire(&ptable.lock);  //DOC: yieldlock
-  myproc()->state = RUNNABLE;
-  sched();
-  release(&ptable.lock);
+      if(true){
+          acquire(&ptable.lock);  //DOC: yieldlock
+          myproc()->state = RUNNABLE;
+          sched();
+          release(&ptable.lock);
+      }
+      else{
+          myproc()->slot++;
+          if(myproc()->slot >= QUANTUM){
+              acquire(&ptable.lock);  //DOC: yieldlock
+              myproc()->state = RUNNABLE;
+              myproc()->slot = 0;
+              sched();
+              release(&ptable.lock);
+          }
+      }
+
+
 }
 
 // A fork child's very first scheduling by scheduler()
