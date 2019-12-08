@@ -52,6 +52,11 @@ struct proc {
   int slot;                    // number of slots running
   int priority;                // priority of the process
   int calculatedPriority;      // Calculated priority for each process. This part is updated during running a process
+  int creationTime;            // creation time of a process
+  int terminationTime;         // Time application terminated
+  int sleepingTime;            // Time duration application slept
+  int readyTime;               // Time the process is ready
+  int runningTime;             // Time application is running
 };
 
 // Process memory is laid out contiguously, low addresses first:

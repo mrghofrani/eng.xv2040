@@ -345,6 +345,7 @@ scheduler(void)
   c->proc = 0;
   
   for(;;){
+
     // Enable interrupts on this processor.
     sti();
     if(algorithm == 2) {
