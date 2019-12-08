@@ -101,3 +101,13 @@ sys_changePriority(void){
     myproc()->priority = priority;
     return 1;
 }
+
+int
+sys_changeAlgorithm(void){
+    int algorihtm;
+    if(argint(0,&algorihtm) < 0)
+        return -1;
+    if(algorihtm == 0 || algorihtm == 1 || algorihtm == 2)
+        return changeAlgorithm();
+    return -1;
+}
