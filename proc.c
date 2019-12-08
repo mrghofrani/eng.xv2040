@@ -348,7 +348,7 @@ scheduler(void)
     // Enable interrupts on this processor.
     sti();
 
-    if(true) {
+    if(1) {
         min_calculatedPriority = INT_MAX;
         found = 0; // Zero means not found
 
@@ -379,9 +379,9 @@ scheduler(void)
         }
         release(&ptable.lock);
     }
-    else{
-        for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-            if(p->state != RUNNABLE)
+    else {
+        for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+            if (p->state != RUNNABLE)
                 continue;
             // Switch to chosen process.  It is the process's job
             // to release ptable.lock and then reacquire it
@@ -397,7 +397,7 @@ scheduler(void)
             c->proc = 0;
 
         }
-
+    }
   }
 }
 
@@ -431,7 +431,7 @@ sched(void)
 void
 yield(void)
 {
-      if(true){
+      if(1){
           acquire(&ptable.lock);  //DOC: yieldlock
           myproc()->state = RUNNABLE;
           sched();
