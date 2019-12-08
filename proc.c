@@ -346,8 +346,26 @@ scheduler(void)
   
   for(;;){
 
+
     // Enable interrupts on this processor.
     sti();
+
+    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+        switch (p->state){
+            case UNUSED:
+                break;
+            case EMBRYO:
+                break;
+            case SLEEPING:
+                break;
+            case RUNNABLE:
+                break;
+            case RUNNING:
+                break;
+            case ZOMBIE:
+                break;
+        }
+    }
     if(algorithm == 2) {
         min_calculatedPriority = INT_MAX;
         found = 0; // Zero means not found
