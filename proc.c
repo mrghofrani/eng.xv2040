@@ -104,6 +104,13 @@ found:
   p->priority = 5;
   p->calculatedPriority = min_calculated_priority;
 
+  //initialization of times in process
+  p->creationTime = 0;
+  p->terminationTime = 0;
+  p->sleepingTime = 0;
+  p->readyTime = 0;
+  p->runningTime = 0;
+
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -111,6 +118,9 @@ found:
     p->state = UNUSED;
     return 0;
   }
+
+  p->creationTime = ticks;
+
   sp = p->kstack + KSTACKSIZE;
 
   // Leave room for trap frame.
@@ -352,15 +362,11 @@ scheduler(void)
 
     for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
         switch (p->state){
-            case UNUSED:
-                break;
-            case EMBRYO:
-                break;
             case SLEEPING:
+                p->sleepingTime++;
                 break;
             case RUNNABLE:
-                break;
-            case RUNNING:
+                p->readyTime++;
                 break;
             case ZOMBIE:
                 break;
@@ -387,7 +393,7 @@ scheduler(void)
             c->proc = best;
             switchuvm(best);
             best->state = RUNNING;
-
+            p->runningTime++;
             swtch(&(c->scheduler), best->context);
             switchkvm();
 
@@ -407,6 +413,7 @@ scheduler(void)
             c->proc = p;
             switchuvm(p);
             p->state = RUNNING;
+            p->runningTime++;
             p->slot = 0;
             swtch(&(c->scheduler), p->context);
             switchkvm();
