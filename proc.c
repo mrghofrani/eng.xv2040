@@ -594,4 +594,5 @@ procdump(void)
 int
 changeAlgorithm(int algorithm_code){
     algorithm = algorithm_code;
+    return 1;
 }
