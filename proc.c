@@ -347,8 +347,7 @@ scheduler(void)
   for(;;){
     // Enable interrupts on this processor.
     sti();
-
-    if(1) {
+    if(algorithm == 2) {
         min_calculatedPriority = INT_MAX;
         found = 0; // Zero means not found
 
@@ -395,7 +394,6 @@ scheduler(void)
             // Process is done running for now.
             // It should have changed its p->state before coming back.
             c->proc = 0;
-
         }
     }
   }
@@ -431,18 +429,18 @@ sched(void)
 void
 yield(void)
 {
-      if(1){
-          acquire(&ptable.lock);  //DOC: yieldlock
-          myproc()->state = RUNNABLE;
-          sched();
-          release(&ptable.lock);
-      }
-      else{
+      if(algorithm == 1){
           myproc()->slot++;
           if(myproc()->slot >= QUANTUM){
               acquire(&ptable.lock);  //DOC: yieldlock
               myproc()->state = RUNNABLE;
               myproc()->slot = 0;
+              sched();
+              release(&ptable.lock);
+      }
+      else{
+              acquire(&ptable.lock);  //DOC: yieldlock
+              myproc()->state = RUNNABLE;
               sched();
               release(&ptable.lock);
           }
