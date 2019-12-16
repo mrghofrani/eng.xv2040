@@ -103,4 +103,4 @@ add_executable(eng_xv2040
         vm.c
         wc.c
         x86.h
-        zombie.c testq3p2.c test.c)
+        zombie.c testq3p2.c test.c originalSchedTest.c)
