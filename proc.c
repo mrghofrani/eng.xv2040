@@ -15,6 +15,7 @@ struct {
 
 static struct proc *initproc;
 int algorithm = 0;
+long long int timer = 0;
 int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
@@ -289,8 +290,7 @@ exit(void)
 
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
-  myproc()->terminationTime = ticks; // TODO: Note that you should handle the time variables of processes that are in zombie states. In other words, when a
-                                    // TODO: process is in a zombie state, its turnaround time and waiting time should not be affected.
+  myproc()->terminationTime = ticks;
   sched();
   panic("zombie exit");
 }
@@ -408,23 +408,10 @@ scheduler(void)
   c->proc = 0;
   
   for(;;){
-
-
+      timer++;
     // Enable interrupts on this processor.
     sti();
 
-    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-        switch (p->state){
-            case SLEEPING:
-                p->sleepingTime++;
-                break;
-            case RUNNABLE:
-                p->readyTime++;
-                break;
-            default:
-                break;
-        }
-    }
     acquire(&ptable.lock);
     if(algorithm == 2) {
         min_calculatedPriority = INT_MAX;
@@ -446,7 +433,6 @@ scheduler(void)
             c->proc = best;
             switchuvm(best);
             best->state = RUNNING;
-            p->runningTime++;
             swtch(&(c->scheduler), best->context);
             switchkvm();
 
@@ -459,13 +445,13 @@ scheduler(void)
         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
             if (p->state != RUNNABLE)
                 continue;
+
             // Switch to chosen process.  It is the process's job
             // to release ptable.lock and then reacquire it
             // before jumping back to us.
             c->proc = p;
             switchuvm(p);
             p->state = RUNNING;
-            p->runningTime++;
             p->slot = 0;
             swtch(&(c->scheduler), p->context);
             switchkvm();
@@ -674,4 +660,31 @@ int
 changeAlgorithm(int algorithm_code){
     algorithm = algorithm_code;
     return 1;
+}
+
+/*
+  ass1:task2 this method will run every clock tick and update the statistic fields for each proc
+*/
+void update_table() {
+    struct proc *p;
+    acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        switch(p->state) {
+            case SLEEPING:
+                p->sleepingTime++;
+                break;
+            case RUNNABLE:
+                p->readyTime++;
+                break;
+            case RUNNING:
+                p->runningTime++;
+                break;
+            case EMBRYO:
+                p->creationTime++;
+                break;
+            default:
+                break;
+        }
+    }
+    release(&ptable.lock);
 }

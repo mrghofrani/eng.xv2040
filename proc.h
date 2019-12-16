@@ -64,3 +64,4 @@ struct proc {
 //   original data and bss
 //   fixed-size stack
 //   expandable heap
+void update_table(); // This function is for creating a table for all processes
