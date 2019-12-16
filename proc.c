@@ -288,7 +288,8 @@ exit(void)
 
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
-  myproc()->terminationTime = ticks;
+  myproc()->terminationTime = ticks; // TODO: Note that you should handle the time variables of processes that are in zombie states. In other words, when a
+                                    // TODO: process is in a zombie state, its turnaround time and waiting time should not be affected.
   sched();
   panic("zombie exit");
 }
