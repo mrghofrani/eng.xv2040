@@ -104,10 +104,10 @@ sys_changePriority(void){
 
 int
 sys_changeAlgorithm(void){
-    int algorihtm;
-    if(argint(0,&algorihtm) < 0)
+    int algorithm;
+    if(argint(0,&algorithm) < 0)
         return -1;
-    if(algorihtm == 0 || algorihtm == 1 || algorihtm == 2)
-        return changeAlgorithm();
+    if(algorithm == 0 || algorithm == 1 || algorithm == 2)
+        return changeAlgorithm(algorithm);
     return -1;
 }

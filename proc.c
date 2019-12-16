@@ -347,12 +347,13 @@ scheduler(void)
   for(;;){
     // Enable interrupts on this processor.
     sti();
+
+    acquire(&ptable.lock);
     if(algorithm == 2) {
         min_calculatedPriority = INT_MAX;
         found = 0; // Zero means not found
 
         // Loop over process table looking for process to run.
-        acquire(&ptable.lock);
         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
             if (p->state == RUNNABLE && min_calculatedPriority > p->calculatedPriority) {
                 min_calculatedPriority = p->calculatedPriority;
@@ -376,7 +377,7 @@ scheduler(void)
             // It should have changed its p->state before coming back.
             c->proc = 0;
         }
-        release(&ptable.lock);
+
     }
     else {
         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
@@ -396,6 +397,7 @@ scheduler(void)
             c->proc = 0;
         }
     }
+    release(&ptable.lock);
   }
 }
 
