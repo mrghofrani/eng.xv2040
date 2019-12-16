@@ -368,7 +368,7 @@ scheduler(void)
             case RUNNABLE:
                 p->readyTime++;
                 break;
-            case ZOMBIE:
+            default:
                 break;
         }
     }

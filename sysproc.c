@@ -108,6 +108,6 @@ sys_changeAlgorithm(void){
     if(argint(0,&algorihtm) < 0)
         return -1;
     if(algorihtm == 0 || algorihtm == 1 || algorihtm == 2)
-        return changeAlgorithm();
+        return changeAlgorithm(algorihtm);
     return -1;
 }
