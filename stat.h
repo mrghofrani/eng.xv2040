@@ -9,3 +9,11 @@ struct stat {
   short nlink; // Number of links to file
   uint size;   // Size of file in bytes
 };
+
+struct timeVariable{
+    int creationTime;      // Time process has been created
+    int terminationTime;   // Time process has been terminated
+    int sleepingTime;      // Time duration that process has been sleeping
+    int readyTime;         // Time duration that process was in ready in state
+    int runningTime;       // Time duration process was running
+};
