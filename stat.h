@@ -10,7 +10,7 @@ struct stat {
   uint size;   // Size of file in bytes
 };
 
-struct timeVariable{
+struct timeVariable {
     int creationTime;      // Time process has been created
     int terminationTime;   // Time process has been terminated
     int sleepingTime;      // Time duration that process has been sleeping

@@ -9,6 +9,7 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
+struct timeVariable;
 
 // bio.c
 void            binit(void);
@@ -118,6 +119,7 @@ void            setproc(struct proc*);
 void            sleep(void*, struct spinlock*);
 void            userinit(void);
 int             wait(void);
+int             waitForChild(struct timeVariable*);
 void            wakeup(void*);
 void            yield(void);
 int             changeAlgorithm(int);

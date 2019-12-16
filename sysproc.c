@@ -6,6 +6,7 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+#include "stat.h"
 
 int
 sys_fork(void)
@@ -110,4 +111,12 @@ sys_changeAlgorithm(void){
     if(algorihtm == 0 || algorihtm == 1 || algorihtm == 2)
         return changeAlgorithm(algorihtm);
     return -1;
+}
+
+int
+sys_waitForChild(void){
+    struct timeVariable* tv;
+    if(argptr(0, (void*)&tv, sizeof(*tv) ) < 0)
+        return -1;
+    return waitForChild(tv);
 }

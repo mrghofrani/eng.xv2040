@@ -22,3 +22,4 @@
 #define SYS_close  21
 #define SYS_changePriority 22
 #define SYS_changeAlgorithm 23
+#define SYS_waitForChild 24
