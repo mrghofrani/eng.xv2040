@@ -15,7 +15,6 @@ struct {
 
 static struct proc *initproc;
 int algorithm = 0;
-long long int timer = 0;
 int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
@@ -408,7 +407,6 @@ scheduler(void)
   c->proc = 0;
   
   for(;;){
-      timer++;
     // Enable interrupts on this processor.
     sti();
 
@@ -442,7 +440,7 @@ scheduler(void)
         }
     }
     else {
-        for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+        for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) { // TODO: delete a line myproc()->slot=0;
             if (p->state != RUNNABLE)
                 continue;
 
@@ -452,7 +450,6 @@ scheduler(void)
             c->proc = p;
             switchuvm(p);
             p->state = RUNNING;
-            p->slot = 0;
             swtch(&(c->scheduler), p->context);
             switchkvm();
             // Process is done running for now.
@@ -494,23 +491,21 @@ sched(void)
 void
 yield(void)
 {
+    acquire(&ptable.lock); //DOC: yieldlock
       if(algorithm == 1){
-          myproc()->slot++;
+//          myproc()->slot ++;
           if(myproc()->slot >= QUANTUM){
-              acquire(&ptable.lock);  //DOC: yieldlock
+//              cprintf("\'%d\' yield \'%d\'",myproc()->pid, myproc()->slot);
               myproc()->state = RUNNABLE;
               myproc()->slot = 0;
               sched();
-              release(&ptable.lock);
       }
       else{
-              acquire(&ptable.lock);  //DOC: yieldlock
               myproc()->state = RUNNABLE;
               sched();
-              release(&ptable.lock);
           }
       }
-
+    release(&ptable.lock);
 
 }
 
@@ -678,6 +673,7 @@ void update_table() {
                 break;
             case RUNNING:
                 p->runningTime++;
+                p->slot++;
                 break;
             case EMBRYO:
                 p->creationTime++;
