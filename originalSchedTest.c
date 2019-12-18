@@ -26,7 +26,7 @@ int main(){
             chpid = waitForChild(&tv);
             chid[i] = chpid;
             prc[i] = tv;
-            wt += tv.readyTime;
+            wt += (tv.readyTime + tv.sleepingTime);
             cbt += tv.runningTime;
             tt += (tv.terminationTime - tv.creationTime);
         }
@@ -35,7 +35,7 @@ int main(){
             chpid = chid[i];
             printf(1, "Process %d left created %d, run duration was %d, slept for %d, was ready for %d, terminated at %d\n",
                    chpid, tv.creationTime, tv.runningTime, tv.sleepingTime, tv.readyTime, tv.terminationTime);
-            printf(1, "CBT: %d, WT: %d, TT: %d\n", tv.runningTime, tv.readyTime, tv.terminationTime - tv.creationTime);
+            printf(1, "CBT: %d, WT: %d, TT: %d\n", tv.runningTime, tv.readyTime + tv.sleepingTime, tv.terminationTime - tv.creationTime);
         }
         printf(1, "Average WT: %d, Average CBT: %d, Average TT: %d\n", wt/PROCESS_NUMBER, cbt/PROCESS_NUMBER, tt/PROCESS_NUMBER);
         exit();

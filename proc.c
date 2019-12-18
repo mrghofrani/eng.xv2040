@@ -409,10 +409,10 @@ scheduler(void)
   for(;;){
     // Enable interrupts on this processor.
     sti();
-    timer++;
-    update_table();
+
     acquire(&ptable.lock);
-    if(algorithm == 2) {
+
+      if(algorithm == 2) {
         min_calculatedPriority = INT_MAX;
         found = 0; // Zero means not found
 
@@ -492,19 +492,20 @@ sched(void)
 void
 yield(void)
 {
+    update_table();
     acquire(&ptable.lock); //DOC: yieldlock
+    timer++;
       if(algorithm == 1){
-          if(timer % QUANTUM){
-              myproc()->state = RUNNABLE;
-              sched();
-      }
-      else{
+          if(timer % QUANTUM == 0) {
               myproc()->state = RUNNABLE;
               sched();
           }
       }
+      else{
+              myproc()->state = RUNNABLE;
+              sched();
+      }
     release(&ptable.lock);
-
 }
 
 // A fork child's very first scheduling by scheduler()
