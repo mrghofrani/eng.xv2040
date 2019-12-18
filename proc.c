@@ -443,8 +443,6 @@ yield(void)
           sched();
       }
     release(&ptable.lock);
-
-
 }
 
 // A fork child's very first scheduling by scheduler()
