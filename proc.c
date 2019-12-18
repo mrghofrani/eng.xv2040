@@ -15,6 +15,7 @@ struct {
 static struct proc *initproc;
 int algorithm = 0;
 int nextpid = 1;
+int timer = 0;
 extern void forkret(void);
 extern void trapret(void);
 
@@ -98,7 +99,6 @@ allocproc(void)
   return 0;
 
 found:
-  p->slot = 0;
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->priority = 5;
@@ -389,7 +389,6 @@ scheduler(void)
             c->proc = p;
             switchuvm(p);
             p->state = RUNNING;
-            p->slot = 0;
             swtch(&(c->scheduler), p->context);
             switchkvm();
             // Process is done running for now.
@@ -431,22 +430,19 @@ sched(void)
 void
 yield(void)
 {
+    timer++;
+    acquire(&ptable.lock);  //DOC: yieldlock
       if(algorithm == 1){
-          myproc()->slot++;
-          if(myproc()->slot >= QUANTUM){
-              acquire(&ptable.lock);  //DOC: yieldlock
-              myproc()->state = RUNNABLE;
-              myproc()->slot = 0;
-              sched();
-              release(&ptable.lock);
-      }
-      else{
-              acquire(&ptable.lock);  //DOC: yieldlock
+          if(timer % QUANTUM == 0) {
               myproc()->state = RUNNABLE;
               sched();
-              release(&ptable.lock);
           }
       }
+      else{
+          myproc()->state = RUNNABLE;
+          sched();
+      }
+    release(&ptable.lock);
 
 
 }

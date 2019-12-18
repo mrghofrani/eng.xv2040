@@ -49,7 +49,6 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-  int slot;                    // number of slots running
   int priority;                // priority of the process
   int calculatedPriority;      // Calculated priority for each process. This part is updated during running a process
 };
