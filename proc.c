@@ -677,6 +677,7 @@ void update_table() {
                 p->creationTime++;
                 break;
             default:
+
                 break;
         }
     }
