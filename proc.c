@@ -493,8 +493,8 @@ void
 yield(void)
 {
     update_table();
-    acquire(&ptable.lock); //DOC: yieldlock
     timer++;
+    acquire(&ptable.lock); //DOC: yieldlock
       if(algorithm == 1){
           if(timer % QUANTUM == 0) {
               myproc()->state = RUNNABLE;
