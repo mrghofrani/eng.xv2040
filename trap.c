@@ -53,7 +53,7 @@ trap(struct trapframe *tf)
     if(cpuid() == 0){
       acquire(&tickslock);
       ticks++;
-      update_table(); // Update table in each tick
+//      update_table(); // Update table in each tick
       wakeup(&ticks);
       release(&tickslock);
     }

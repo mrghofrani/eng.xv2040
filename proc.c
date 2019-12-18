@@ -16,6 +16,7 @@ struct {
 static struct proc *initproc;
 int algorithm = 0;
 int nextpid = 1;
+int timer = 0;
 extern void forkret(void);
 extern void trapret(void);
 
@@ -120,7 +121,7 @@ found:
     return 0;
   }
 
-  p->creationTime = ticks;
+  p->creationTime = timer;
 
   sp = p->kstack + KSTACKSIZE;
 
@@ -289,7 +290,7 @@ exit(void)
 
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
-  myproc()->terminationTime = ticks;
+  myproc()->terminationTime = timer;
   sched();
   panic("zombie exit");
 }
@@ -409,8 +410,11 @@ scheduler(void)
   for(;;){
     // Enable interrupts on this processor.
     sti();
+    update_table();
 
     acquire(&ptable.lock);
+    timer++;
+
     if(algorithm == 2) {
         min_calculatedPriority = INT_MAX;
         found = 0; // Zero means not found
@@ -494,7 +498,7 @@ yield(void)
     acquire(&ptable.lock); //DOC: yieldlock
       if(algorithm == 1){
 //          myproc()->slot ++;
-          if(myproc()->slot >= QUANTUM){
+          if(timer % QUANTUM == 0){
 //              cprintf("\'%d\' yield \'%d\'",myproc()->pid, myproc()->slot);
               myproc()->state = RUNNABLE;
               myproc()->slot = 0;

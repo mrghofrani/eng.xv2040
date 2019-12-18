@@ -26,7 +26,7 @@ int main(){
             chpid = waitForChild(&tv);
             chid[i] = chpid;
             prc[i] = tv;
-            wt += tv.readyTime;
+            wt += (tv.readyTime + tv.sleepingTime);
             cbt += tv.runningTime;
             tt += (tv.terminationTime - tv.creationTime);
         }
