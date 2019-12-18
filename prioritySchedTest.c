@@ -42,7 +42,7 @@ int main(){
                 chpid = chid[i][j];
                 printf(1, "Process %d left created %d, run duration was %d, slept for %d, was ready for %d, terminated at %d\n",
                        chpid, tv.creationTime, tv.runningTime, tv.sleepingTime, tv.readyTime, tv.terminationTime);
-                printf(1, "CBT: %d, WT: %d\n", tv.runningTime, tv.readyTime);
+                printf(1, "CBT: %d, WT: %d, TT:\n", tv.runningTime, tv.readyTime);
                 lwt += tv.readyTime;
                 lcbt += tv.runningTime;
             }
