@@ -122,7 +122,7 @@ int             wait(void);
 int             waitForChild(struct timeVariable*);
 void            wakeup(void*);
 void            yield(void);
-int             changeAlgorithm(int);
+int             changePolicy(int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

@@ -104,12 +104,12 @@ sys_changePriority(void){
 }
 
 int
-sys_changeAlgorithm(void){
-    int algorihtm;
-    if(argint(0,&algorihtm) < 0)
+sys_changePolicy(void){
+    int policy;
+    if(argint(0,&policy) < 0)
         return -1;
-    if(algorihtm == 0 || algorihtm == 1 || algorihtm == 2)
-        return changeAlgorithm(algorihtm);
+    if(policy == 0 || policy== 1 || policy == 2)
+        return changePolicy(policy);
     return -1;
 }
 

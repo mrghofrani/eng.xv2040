@@ -14,8 +14,8 @@ struct {
 } ptable;
 
 static struct proc *initproc;
-int algorithm = 0;
-long long int timer = 0;
+int policy = 0;
+int timer = 0;
 int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
@@ -100,7 +100,6 @@ allocproc(void)
   return 0;
 
 found:
-  p->slot = 0;
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->priority = 5;
@@ -121,7 +120,7 @@ found:
     return 0;
   }
 
-  p->creationTime = ticks;
+  p->creationTime = timer;
 
   sp = p->kstack + KSTACKSIZE;
 
@@ -290,7 +289,7 @@ exit(void)
 
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
-  myproc()->terminationTime = ticks;
+  myproc()->terminationTime = timer;
   sched();
   panic("zombie exit");
 }
@@ -408,12 +407,11 @@ scheduler(void)
   c->proc = 0;
   
   for(;;){
-      timer++;
     // Enable interrupts on this processor.
     sti();
 
     acquire(&ptable.lock);
-    if(algorithm == 2) {
+    if(policy == 2) {
         min_calculatedPriority = INT_MAX;
         found = 0; // Zero means not found
 
@@ -452,7 +450,6 @@ scheduler(void)
             c->proc = p;
             switchuvm(p);
             p->state = RUNNING;
-            p->slot = 0;
             swtch(&(c->scheduler), p->context);
             switchkvm();
             // Process is done running for now.
@@ -494,23 +491,20 @@ sched(void)
 void
 yield(void)
 {
-      if(algorithm == 1){
-          myproc()->slot++;
-          if(myproc()->slot >= QUANTUM){
-              acquire(&ptable.lock);  //DOC: yieldlock
-              myproc()->state = RUNNABLE;
-              myproc()->slot = 0;
-              sched();
-              release(&ptable.lock);
-      }
-      else{
-              acquire(&ptable.lock);  //DOC: yieldlock
+    timer++;
+    update_table();
+    acquire(&ptable.lock);  //DOC: yieldlock
+      if(policy == 1){
+          if(timer % QUANTUM == 0) {
               myproc()->state = RUNNABLE;
               sched();
-              release(&ptable.lock);
           }
       }
-
+      else{
+          myproc()->state = RUNNABLE;
+          sched();
+      }
+    release(&ptable.lock);
 
 }
 
@@ -657,8 +651,8 @@ procdump(void)
 }
 
 int
-changeAlgorithm(int algorithm_code){
-    algorithm = algorithm_code;
+changePolicy(int policy_code){
+    policy = policy_code;
     return 1;
 }
 

@@ -10,7 +10,7 @@
 
 int main(){
     int pid = getpid();
-    changeAlgorithm(2);
+    changePolicy(2);
     for(int i = 0 ; i < PROCESS_NUMBER; ++i) { // TODO: Think 25 minutes on this to figure out B-)
         if (pid > 0)
             pid = fork();

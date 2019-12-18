@@ -25,7 +25,7 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int changePriority(int);
-int changeAlgorithm(int);
+int changePolicy(int);
 int waitForChild(struct timeVariable*);
 
 // ulib.c
