@@ -100,7 +100,6 @@ allocproc(void)
   return 0;
 
 found:
-  p->slot = 0;
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->priority = 5;
@@ -497,11 +496,9 @@ yield(void)
 {
     acquire(&ptable.lock); //DOC: yieldlock
       if(algorithm == 1){
-//          myproc()->slot ++;
           if(timer % QUANTUM == 0){
 //              cprintf("\'%d\' yield \'%d\'",myproc()->pid, myproc()->slot);
               myproc()->state = RUNNABLE;
-              myproc()->slot = 0;
               sched();
       }
       else{
@@ -677,7 +674,6 @@ void update_table() {
                 break;
             case RUNNING:
                 p->runningTime++;
-                p->slot++;
                 break;
             case EMBRYO:
                 p->creationTime++;
